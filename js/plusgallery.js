@@ -60,6 +60,7 @@ var pg = {
 	albumLimit: 20, //Limit amout of albums to load initially. 
 	limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
 	apiKey: '', //used with Flickr
+	exclude: '',
 	
 	/*don't touch*/
 	t: '', //timer
@@ -188,6 +189,12 @@ var pg = {
 			pg.albumLimit = dataAttr;
 		}
 		
+		//album id to exclude
+		dataAttr = pgDiv.attr('data-exclude');
+		if(dataAttr) {
+			pg.exclude = dataAttr.split(',');
+		}
+		
 		//Api key - used with Flickr
 		dataAttr = pgDiv.attr('data-api-key');
 		if(dataAttr) {
@@ -305,6 +312,8 @@ var pg = {
 		}
 		
 		
+		console.log('albumURL: ' + albumURL);
+		
 		$.getJSON(albumURL,function(json) {
 				$('#plusgallery').addClass('loaded');
 				
@@ -319,6 +328,9 @@ var pg = {
 					if(albumTotal > pg.albumLimit) {
 						albumTotal = pg.albumLimit;
 					}
+					
+					//remove excluded galleries if there are any.
+					//albumTotal = albumTotal - pg.exclude.length;
 				
 					
 					if(albumTotal > 0){
@@ -410,19 +422,32 @@ var pg = {
 	
 	----------------------------*/
 	loadAlbums: function(galleryTitle,galleryImage,galleryJSON) {
+		var displayAlbum = true;
 		
-		if(pg.type == 'facebook' || pg.type == 'flickr') {
-		 var imgHTML = 	'<img src="/images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+		//exclude albums if pg.exclude is set
+		$.each(pg.exclude,function(index, value){ //exclude albums if pg.exclude is set
+			if(galleryJSON.indexOf(value) > 0){
+				displayAlbum = false;
+			}
+		});												 
+															 
+															 
+		if(displayAlbum){
+			if(pg.type == 'facebook' || pg.type == 'flickr') {
+			 var imgHTML = 	'<img src="/images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+			}
+			else {
+				var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+			}
+					
+			$('#pgalbums').append(
+				'<li class="pgalbumthumb">' + 
+					'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle"><b>' + galleryTitle + '</b></span><span class="pgplus">+</span></a>' + 
+				'</li>'
+			);
 		}
-		else {
-			var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
-		}
-				
-		$('#pgalbums').append(
-			'<li class="pgalbumthumb">' + 
-      	'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle"><b>' + galleryTitle + '</b></span><span class="pgplus">+</span></a>' + 
-			'</li>'
-		);
+		
+		
 			
 	
 	}, //End loadAlbums
