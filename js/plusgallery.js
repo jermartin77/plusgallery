@@ -312,7 +312,6 @@ var pg = {
 		}
 		
 		
-		console.log('albumURL: ' + albumURL);
 		
 		$.getJSON(albumURL,function(json) {
 				$('#plusgallery').addClass('loaded');
