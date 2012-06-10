@@ -4,7 +4,7 @@ plusgallery
 A responsive javascript based image gallery driven by photos from a 3rd party source.
 
 The Quick 'n' Dirty Edition
-=================
+===========================
 
 1. Download the files 
 	 Add this code to your site: 
@@ -17,4 +17,4 @@ The Quick 'n' Dirty Edition
   <div id="plusgallery" data-type="google" data-userid="mygoogleuserid"><!-- +Gallery http://www.plusgallery.net/ --></div>
 	
 	
-	Read more about option data attributes at http://www.plusgallery.net
+	Read more about optional data attributes and how to use them at http://www.plusgallery.net
