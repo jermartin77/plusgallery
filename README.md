@@ -14,9 +14,7 @@ The Quick 'n' Dirty Edition
 		<link rel="stylesheet" href="css/plusgallery.css" />
 		<script src="js/plusgallery.js"></script>
 		
-  	<div id="plusgallery" data-type="google" data-userid="mygoogleuserid">
-		<!-- +Gallery http://www.plusgallery.net/ -->
-		</div>
+  	<div id="plusgallery" data-type="google" data-userid="mygoogleuserid"></div>
 	
 	
 	Read more about optional data attributes and how to use them at http://www.plusgallery.net
