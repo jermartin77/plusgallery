@@ -15,7 +15,7 @@ The Quick 'n' Dirty Edition
 		<script src="js/plusgallery.js"></script>
 		
   	<div id="plusgallery" data-type="google" data-userid="mygoogleuserid">
-			<!-- +Gallery http://www.plusgallery.net/ -->
+		<!-- +Gallery http://www.plusgallery.net/ -->
 		</div>
 	
 	
