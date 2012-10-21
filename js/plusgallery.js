@@ -93,7 +93,6 @@ var pg = {
 			pg.loadAlbumData();
 		}
 		
-		
 		//attach loadGallery to the album links
 		_doc.on("click", ".pgalbumlink",function(e){
 			e.preventDefault();
@@ -118,7 +117,6 @@ var pg = {
 		
 		
 		/*zoom events*/
-		
 		_doc.on('click','.pgzoomarrow',function(e){
 			e.preventDefault();
 			var dir = this.rel;
@@ -201,9 +199,6 @@ var pg = {
 			pg.apiKey = dataAttr;
 		}
 		
-		
-		
-		
 		dataAttr = pgDiv.attr('data-album-id');
 		if(dataAttr) {
 			pg.albumId = dataAttr;
@@ -241,7 +236,6 @@ var pg = {
 		}
 		 */
 	},
-	
 	
 	
 	/*--------------------------
@@ -412,7 +406,6 @@ var pg = {
 
 		});
 	},
-		
 	
 	
 	/*--------------------------
@@ -603,7 +596,7 @@ var pg = {
 	zoomIdx: null, //the zoom index
 	zoomImagesLoaded: [],
 	zoomScrollDir: null,
-	zoomScrollLeft: null,
+	zoomScrollLeft: 0,
 	loadZoom: function(idx){
 		pg.zoomIdx = idx;
 		pg.winWidth = $(window).width();	
@@ -682,12 +675,10 @@ var pg = {
 				
 
 		$('#pgzoomscroll').on('scroll',function(){
-			
 			currentScrollLeft = $(this).scrollLeft();
 			if(canLoadZoom == true) {
 				canLoadZoom = false;
 				scrollTimeout = setTimeout(function(){
-					
 					if(currentScrollLeft == 0){
 						pgPrevious.fadeOut();
 					}
@@ -703,11 +694,8 @@ var pg = {
 						pgNext.fadeIn();
 					}
 					
-					/*console.log ('currentScrollLeft: ' + currentScrollLeft);
-					console.log ('pg.zoomScrollLeft: ' + pg.zoomScrollLeft);*/
-					
-					if(currentScrollLeft % pg.zoomScrollLeft > 20){
-						
+					/*Check if we have scrolled left and if so load up the zoom image*/
+					if(currentScrollLeft % pg.zoomScrollLeft > 20 || (currentScrollLeft > 0 && pg.zoomScrollLeft == 0)){
 						pg.zoomScrollLeft = currentScrollLeft;
 						var currentIdx = pg.zoomScrollLeft / pg.winWidth;
 						
@@ -723,7 +711,6 @@ var pg = {
 						}	
 					}
 					canLoadZoom = true;
-						
 				},200);
 			}
 			
