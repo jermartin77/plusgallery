@@ -45,7 +45,7 @@
 	position: relative;
 	z-index: 1;
 	
-	background: url(/images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
+	background: url(../images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
 	min-height: 240px;
 	text-align: left;
 }
@@ -62,7 +62,6 @@
 
 #plusgallery a {
 	background-color: #fff;
-	
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -82,13 +81,13 @@ background-color: #23B3E2;
 #plusgallery a img {
 	display: block;
 	max-width: 100%;
-	max-heigth: 100%;
+	max-height: 100%;
 }
 
 .spacer {
 	position: relative;
 	z-index: 1;
-	background: #fff url(/images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
+	background: #fff url(../images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
 }
 
 
@@ -161,7 +160,7 @@ background-color: #23B3E2;
 
 
 .oldie .pgalbumtitle {
-	background: url(/images/plusgallery/80.png);
+	background: url(../images/plusgallery/80.png);
 	width: 210px;
 }
 
@@ -178,7 +177,7 @@ background-color: #23B3E2;
 	top: 2.3809523809524%;/*5/210*/
 	left: 2.3809523809524%;/*5/210*/
 	z-index: 6;
-	background: rgba(0,0,0,.8) url(/images/plusgallery/loading-gallery.gif) no-repeat 50% 50%;
+	background: rgba(0,0,0,.8) url(../images/plusgallery/loading-gallery.gif) no-repeat 50% 50%;
 }
 
 .oldie .pgalbumthumb .pgloading {
@@ -246,7 +245,7 @@ background-color: #23B3E2;
 
 #pgthumbcrumbs li#pgthumbhome {
 	cursor: pointer;
-	/*background: #0087b3 url(/images/plusgallery/album-icon.gif) no-repeat 50% 50%;*/
+	/*background: #0087b3 url(../images/plusgallery/album-icon.gif) no-repeat 50% 50%;*/
 	-webkit-transition: background 0.3s ease-out;
 	-moz-transition: background 0.3s ease-out;
 	-ms-transition: background 0.3s ease-out;
@@ -278,7 +277,7 @@ background-color: #23B3E2;
 .pgthumb {
 	float: left;
 	width: 14.5833333333333%;
-	heigth: 14.5833333333333%;
+	height: 14.5833333333333%;
 	max-width: 140px;
 	margin: 1.0417%;
 	display: block;
@@ -305,7 +304,7 @@ background-color: #23B3E2;
 }
 
 .pgthumb img {
-	background: #fff url(/images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
+	background: #fff url(../images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
 	width: 100%;
 	border: none;
 	max-width: 130px;
@@ -330,7 +329,7 @@ background-color: #23B3E2;
 }
 
 .oldie #pgzoomview {
-	background: url(/images/plusgallery/80.png);
+	background: url(../images/plusgallery/80.png);
 }
 
 
@@ -371,7 +370,7 @@ background-color: #23B3E2;
 
 
 .pgzoomslide.loading {
-	background-image: url(/images/plusgallery/loading-gallery.gif);
+	background-image: url(../images/plusgallery/loading-gallery.gif);
 	background-position: 50% 50%;
 	background-repeat: no-repeat;position: relative;
 }
@@ -439,7 +438,7 @@ background-color: #23B3E2;
 	position: fixed;
 	width: 52px;
 	height: 100px;
-	background: url(/images/plusgallery/arrows.gif) no-repeat 0 0;
+	background: url(../images/plusgallery/arrows.gif) no-repeat 0 0;
 	top: 50%;
 	margin-top: -50px;
 	overflow: hidden;
@@ -486,7 +485,7 @@ background-color: #23B3E2;
 	background-position: 100% 50%;
 	width: 52px;
 	height: 52px;
-	background-image: url(/images/plusgallery/zoom-icons.gif);
+	background-image: url(../images/plusgallery/zoom-icons.gif);
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	overflow: hidden;
