@@ -1,5 +1,5 @@
  /*
- * +Gallery Javascript Photo gallery v0.7.4
+ * +Gallery Javascript Photo gallery v0.8
  * http://plusgallery.net/
  *
  * Copyright 2012, Jeremiah Martin
