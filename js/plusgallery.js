@@ -53,6 +53,7 @@ var pg = {
 	/*user defined Defaults*/
 	/*slideDelay: 6000,	integer: delay between slides in milliseconds*/
 	/*autoPlay: false, boolean: play slideshow when gallery loads*/
+	imagePath: '../images/plusgallery',
 	type: 'google',
 	albumTitle: true, //show the album title in single album mode
 	imgArray: new Array(),
@@ -426,7 +427,7 @@ var pg = {
 															 
 		if(displayAlbum){
 			if(pg.type == 'facebook' || pg.type == 'flickr') {
-			 var imgHTML = 	'<img src="/images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+			 var imgHTML = 	'<img src="'+ pg.imagePath + '/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
 			}
 			else {
 				var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
@@ -563,7 +564,7 @@ var pg = {
 						case 'facebook':
 							var imgTitle = obj.name;
 							var imgSrc = obj.images[1].source;
-							var imgTh = '/images/plusgallery/210.png';
+							var imgTh = pg.imagePath + '/210.png';
 							var imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
 							break;
 						}
@@ -635,7 +636,7 @@ var pg = {
 			$(window).on('resize',pg.resizeZoom);
 			
 			$.each(pg.imgArray,function(i){	
-				pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="/images/plusgallery/square.gif" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';																	
+				pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imagePath + '/square.gif" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';																	
 				//no preload version: pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imgArray[idx] + '" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';																	
 
 				if(i + 1 == pg.imgArray.length) {
