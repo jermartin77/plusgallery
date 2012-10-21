@@ -85,8 +85,11 @@ var pg = {
 		pg.winWidth = $(window).width();
 		
 		pg.getDataAttr();
+		
+		
+		
 		pg.writeHTML();
-		if(pg.albumId != null){
+		if(pg.albumId != null || pg.type == 'instagram'){
 			//load single Album
 			pg.loadSingleAlbum();
 		}
@@ -200,12 +203,19 @@ var pg = {
 			pg.apiKey = dataAttr;
 		}
 		
+		
+		//Access Token - used with instagram
+		dataAttr = pgDiv.attr('data-access-token');
+		if(dataAttr) {
+			pg.accessToken = dataAttr;
+		}
 		dataAttr = pgDiv.attr('data-album-id');
 		if(dataAttr) {
 			pg.albumId = dataAttr;
 			
 			//show hide the album title if we are in single gallery mode
 			titleAttr = pgDiv.attr('data-album-title');
+			
 			if(titleAttr == 'true') {
 				pg.albumTitle = true;
 			} else {
@@ -215,6 +225,12 @@ var pg = {
 		else {
 			pg.albumTitle = true;
 			pg.albumId = null;
+			
+			if(pg.type == 'instagram'){
+				//hide the album title for instagram
+				pg.albumTitle = false;
+			}
+			
 		}
 		
 		dataAttr = pgDiv.attr('data-credit');
@@ -278,6 +294,8 @@ var pg = {
 			$('#plusgallery').append('<div id="pgcredit"><a href="http://www.plusgallery.net" target="_blank" title="Powered by +GALLERY"><span>+</span>Gallery</a></div>')
 		}
 		
+		console.log('pg.albumTitle: ' + pg.albumTitle);
+		
 		if(pg.albumTitle == true) {
 			$('#pgthumbview').prepend('<ul id="pgthumbcrumbs" class="clearfix"><li id="pgthumbhome">&laquo;</li></ul>')
 		}
@@ -302,6 +320,11 @@ var pg = {
 		case 'facebook':
 			var albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums&limit=' + pg.albumLimit + '&callback=?';	
 			break;
+		case 'instagram':
+			//we ain't got no albums in instagram
+			var albumURL = null;	
+			break;
+
 		default:
 			alert('Please define a gallery type.');
 		}
@@ -466,6 +489,10 @@ var pg = {
 		case 'facebook':
 			var url = 'http://graph.facebook.com/' + pg.albumId + '/photos';
 			break;
+		case 'instagram':
+			var url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
+			console.log(url);
+			break;
 		}
 		
 		pg.loadGallery(url);
@@ -482,6 +509,12 @@ var pg = {
 	----------------------------*/
 	loadGallery: function(url,title){
 		//console.log('url:'+  url);
+		var obPath,
+				imgTitle = '',
+				imgSrc,
+				imgTh,
+				imgBg = '';
+				
 		pg.imgArray = [];
 		pg.titleArray = [];
 		$('#pgzoom').empty();
@@ -494,23 +527,29 @@ var pg = {
 				
 				$('.crumbtitle').remove();
 				$('#pgthumbs').empty();
-				
+				if(title == undefined){
+					title = '&nbsp;';	
+				}
 				$('#pgthumbcrumbs').append('<li class="crumbtitle">' + title + '</li>');
 			
 				switch(pg.type)
 				{
 				case 'google':
-					var objPath = json.feed.entry;	
+					objPath = json.feed.entry;	
 					break;
 				case 'flickr':
-					var objPath = json.photoset.photo;	
+					objPath = json.photoset.photo;	
 					break;
 				case 'facebook':
-					var objPath = json.data;		
+					objPath = json.data;		
+					break;
+				case 'instagram':
+					objPath = json.data;		
 					break;
 				}
 				
-				
+				console.log(objPath.length);
+								
 			
 				pg.imgTotal = objPath.length;
 				//limit the results
@@ -543,29 +582,34 @@ var pg = {
 						switch(pg.type)
 						{
 						case 'google':
-							var imgTitle = obj.title.$t;
-							var imgSrc = obj.media$group.media$content[0].url;
+							imgTitle = obj.title.$t;
+							imgSrc = obj.media$group.media$content[0].url;
 							var lastSlash = imgSrc.lastIndexOf('/');
 							var imgSrcSubString =imgSrc.substring(lastSlash);
 							
 							//show the max width image 1024 in this case
 							imgSrc = imgSrc.replace(imgSrcSubString, '/s' + zoomWidth + imgSrcSubString);
 							
-							var imgTh = obj.media$group.media$thumbnail[1].url;
-									imgTh = imgTh.replace('s144','s160-c');
-							var imgBg = '';
+							imgTh = obj.media$group.media$thumbnail[1].url;
+							imgTh = imgTh.replace('s144','s160-c');
 							break;
 						case 'flickr':
-							var imgTitle = obj.title;
-							var imgSrc = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.id + '_' + obj.secret + flickrImgExt + '.jpg';
-							var imgTh = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.id + '_' + obj.secret + '_q.jpg';
-							var imgBg = '';
+							imgTitle = obj.title;
+							imgSrc = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.id + '_' + obj.secret + flickrImgExt + '.jpg';
+							imgTh = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.id + '_' + obj.secret + '_q.jpg';
 							break;
 						case 'facebook':
-							var imgTitle = obj.name;
-							var imgSrc = obj.images[1].source;
-							var imgTh = pg.imagePath + '/210.png';
-							var imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
+							imgTitle = obj.name;
+							imgSrc = obj.images[1].source;
+							imgTh = pg.imagePath + '/210.png';
+							imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
+							break;
+						case 'instagram':
+							if(obj.caption != null){
+								imgTitle = obj.caption.text;
+							}
+							imgSrc = obj.images.standard_resolution.url;
+							imgTh = obj.images.low_resolution.url;
 							break;
 						}
 						
