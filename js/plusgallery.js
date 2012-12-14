@@ -1,5 +1,5 @@
  /*
- * +Gallery Javascript Photo gallery v0.8.1
+ * +Gallery Javascript Photo gallery v0.8.2
  * http://plusgallery.net/
  *
  * Copyright 2012, Jeremiah Martin
@@ -280,7 +280,7 @@ SLIDEFADE
 					lmnt.append('<div id="pgcredit"><a href="http://www.plusgallery.net" target="_blank" title="Powered by +GALLERY"><span>+</span>Gallery</a></div>')
 				}
 				
-				console.log('pg.albumTitle: ' + pg.albumTitle);
+				//console.log('pg.albumTitle: ' + pg.albumTitle);
 				
 				if(pg.albumTitle == true) {
 					$('#pgthumbview').prepend('<ul id="pgthumbcrumbs" class="clearfix"><li id="pgthumbhome">&laquo;</li></ul>')
@@ -304,7 +304,7 @@ SLIDEFADE
 					var albumURL = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';	
 					break;
 				case 'facebook':
-					var albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums&limit=' + pg.albumLimit + '&callback=?';	
+					var albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&callback=?';	
 					break;
 				case 'instagram':
 					//we ain't got no albums in instagram
