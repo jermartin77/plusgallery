@@ -1,5 +1,5 @@
  /*
- * +Gallery Javascript Photo gallery v0.8.2
+ * +Gallery Javascript Photo gallery v0.8.3
  * http://plusgallery.net/
  *
  * Copyright 2012, Jeremiah Martin
@@ -318,7 +318,6 @@ SLIDEFADE
 				
 				$.getJSON(albumURL,function(json) {
 						lmnt.addClass('loaded');
-						
 						switch(pg.type)
 						{
 						//have to load differently for for google/facebook/flickr
@@ -476,7 +475,6 @@ SLIDEFADE
 					break;
 				case 'instagram':
 					var url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
-					console.log(url);
 					break;
 				}
 				
@@ -493,7 +491,7 @@ SLIDEFADE
 			
 			----------------------------*/
 			loadGallery: function(url,title){
-				//console.log('url:'+  url);
+				
 				var obPath,
 						imgTitle = '',
 						imgSrc,
@@ -509,7 +507,6 @@ SLIDEFADE
 					cache: false,
 					dataType: "jsonp",
 					success: function(json){
-						
 						$('.crumbtitle').remove();
 						$('#pgthumbs').empty();
 						if(title == undefined){
@@ -533,9 +530,8 @@ SLIDEFADE
 							break;
 						}
 						
-						console.log(objPath.length);
+						//console.log(objPath.length);
 										
-					
 						pg.imgTotal = objPath.length;
 						//limit the results
 						if(pg.limit < pg.imgTotal){
@@ -610,6 +606,7 @@ SLIDEFADE
 								//check to make sure all the images are loaded and if so show the thumbs
 								$('#pgthumbimg' + i).load(function(){
 									thumbsLoaded++;
+									console.log(thumbsLoaded);
 									if(thumbsLoaded == pg.imgTotal) {
 										$('#pgalbums').slideFade(1000,function(){
 										$('.pgalbumthumb .pgloading').remove();								
@@ -618,7 +615,10 @@ SLIDEFADE
 									}
 							});
 							} //end if(i < pg.limit)
-						});
+						}); //end each
+					}, //end success
+					error: function(jqXHR, textStatus, errorThrown){
+						console.log('Error: \njqXHR:' + jqXHR + '\ntextStatus: ' + textStatus + '\nerrorThrown: '  + errorThrown);
 					}
 				});
 			}, //End loadGallery
