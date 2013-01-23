@@ -100,8 +100,8 @@ SLIDEFADE
 				
 				_doc.on("click", "#pgthumbhome",function(e){
 					e.preventDefault();
-					$('#pgthumbview').slideFade(1000);
-					$('#pgalbums').slideFade(1000);
+					$('#pgthumbview').slideFade(700);
+					$('#pgalbums').slideFade(700);
 				});
 				
 				//attach links load detail image
@@ -608,10 +608,10 @@ SLIDEFADE
 									thumbsLoaded++;
 									console.log(thumbsLoaded);
 									if(thumbsLoaded == pg.imgTotal) {
-										$('#pgalbums').slideFade(1000,function(){
+										$('#pgalbums').slideFade(700,function(){
 										$('.pgalbumthumb .pgloading').remove();								
 									});
-									$('#pgthumbview').slideFade(1000);
+									$('#pgthumbview').slideFade(700);
 									}
 							});
 							} //end if(i < pg.limit)
