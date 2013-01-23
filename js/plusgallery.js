@@ -17,19 +17,19 @@ SLIDEFADE
 
 /* Custom plugin for a slide/in out animation with a fade - JJM */
 
-(function( $ ){
-  $.fn.slideFade = function(speed,callback) {
-		 for(var i=0; i<arguments.length; i++)  {
-			if( typeof arguments[i] == "number" ) {
+(function ($) {
+	$.fn.slideFade = function (speed, callback) {
+		for (var i = 0; i < arguments.length; i++) {
+			if (typeof arguments[i] == "number") {
 				var slideSpeed  = arguments[i];
 			}
 			else {
 				var callBack = arguments[i];
 			}
 		}
-	if(!slideSpeed) {
-		var slideSpeed = 500;
-	}
+		if(!slideSpeed) {
+			var slideSpeed = 500;
+		}
 		this.animate({
 				opacity: 'toggle',
 				height: 'toggle'
@@ -42,13 +42,12 @@ SLIDEFADE
   };
 })( jQuery );
 
-(function( $ ){
+(function ($){
 	$.fn.plusGallery = function(options){
-
 		var lmnt = this;
 		var pg = {
 			/*user defined Defaults*/
-			imagePath: '../images/plusgallery',
+			imagePath: 'images/plusgallery',
 			type: 'google',
 			albumTitle: false, //show the album title in single album mode
 			albumLimit: 16, //Limit amout of albums to load initially. 
@@ -136,7 +135,7 @@ SLIDEFADE
 				});
 				
 				_doc.on("click", ".pgzoomimg",function(){
-					return false
+					return false;
 				});
 				
 				clearTimeout(pg.t);	
@@ -436,7 +435,7 @@ SLIDEFADE
 																	 
 				if(displayAlbum){
 					if(pg.type == 'facebook' || pg.type == 'flickr') {
-					 var imgHTML = 	'<img src="'+ pg.imagePath + '/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+					 var imgHTML = 	'<img src="'+ pg.imagePath + '/square.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
 					}
 					else {
 						var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
@@ -444,7 +443,7 @@ SLIDEFADE
 							
 					$('#pgalbums').append(
 						'<li class="pgalbumthumb">' + 
-							'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle"><b>' + galleryTitle + '</b></span><span class="pgplus">+</span></a>' + 
+							'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' + 
 						'</li>'
 					);
 				}
@@ -587,7 +586,7 @@ SLIDEFADE
 								case 'facebook':
 									imgTitle = obj.name;
 									imgSrc = obj.images[1].source;
-									imgTh = pg.imagePath + '/210.png';
+									imgTh = pg.imagePath + '/square.png';
 									imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
 									break;
 								case 'instagram':
@@ -631,13 +630,13 @@ SLIDEFADE
 			loadZoom: function(idx){
 				pg.zoomIdx = idx;
 				pg.winWidth = $(window).width();	
-				var pgZoomView = $('#pgzoomview');
-				var pgZoomScroll = $('#pgzoomscroll');
-				var pgPrevious = $('#pgprevious');
-				var pgNext = $('#pgnext');
-				var pgZoom = $('#pgzoom');
-				var pgZoomHTML = '';
-				var totalImages = pg.imgArray.length;
+				var pgZoomView = $('#pgzoomview'),
+						pgZoomScroll = $('#pgzoomscroll'),
+						pgPrevious = $('#pgprevious'),
+						pgNext = $('#pgnext'),
+						pgZoom = $('#pgzoom'),
+						pgZoomHTML = '',
+						totalImages = pg.imgArray.length;
 				pgZoomView.addClass('fixed');
 				
 				//show/hide the prev/next links
@@ -648,17 +647,12 @@ SLIDEFADE
 				if(idx == totalImages - 1) {
 					pgNext.hide();	
 				}
-				
-				//load the slideshow
-				//pgZoomView.fadeIn(function(){});
 		
 				var pgzoomWidth = pg.imgArray.length * pg.winWidth;
 				$('#pgzoom').width(pgzoomWidth);
 				
 				var scrollLeftInt = parseInt(idx * pg.winWidth);
 				
-				//$(window).on('resize',pg.resizeZoom);
-		
 					
 				pgZoomView.fadeIn(function(){
 					//this has gotta come in after the fade or iOS blows up.	
@@ -694,7 +688,10 @@ SLIDEFADE
 			
 			loadZoomImg:function(idx){
 				if($('#pgzoomimg' + idx).length == 0){
-				$('#pgzoomslide' + idx + ' .pgzoomspacer').after('<img src="' + pg.imgArray[idx] + '" data-src="' + pg.imgArray[idx] + '" title="' + pg.titleArray[idx] + '" alt="' + pg.titleArray[idx] + '" id="pgzoomimg' + idx + '" class="pgzoomimg">');
+					$('#pgzoomslide' + idx + ' .pgzoomspacer').after('<img src="' + pg.imgArray[idx] + '" data-src="' + pg.imgArray[idx] + '" title="' + pg.titleArray[idx] + '" alt="' + pg.titleArray[idx] + '" id="pgzoomimg' + idx + '" class="pgzoomimg">');
+					$('#pgzoomimg' + idx).load(function(){
+						$(this).addClass('active');
+					});
 				}
 			},
 			
