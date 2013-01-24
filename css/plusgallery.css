@@ -123,11 +123,6 @@ background-color: #38beea;
 	width: 94%;
 }
 
-.oldie .pgalbumtitle {
-	background: #333;
-	width: 210px;
-}
-
 .pgalbumthumb .pgloading {
 	width: 95.4545454545455%; /*210/220*/
 	height: 95.4545454545455%; /*210/220*/
@@ -138,11 +133,8 @@ background-color: #38beea;
 }
 
 .oldie .pgalbumthumb .pgloading {
-	background-color: #333;
-	width: 210px; 
-	height: 210px; 
-	top: 5px;
-	left: 5px;
+	top: 3%;
+	left: 3%;
 }
 
 .pgplus {
