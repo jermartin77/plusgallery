@@ -491,17 +491,14 @@ SLIDEFADE
 			
 			----------------------------*/
 			loadGallery: function(url,title){
-				
 				var obPath,
 						imgTitle = '',
 						imgSrc,
 						imgTh,
 						imgBg = '';
-						
 				pg.imgArray = [];
 				pg.titleArray = [];
 				$('#pgzoom').empty();
-																	
 				$.ajax({
 					url: url,
 					cache: false,
@@ -606,7 +603,6 @@ SLIDEFADE
 								//check to make sure all the images are loaded and if so show the thumbs
 								$('#pgthumbimg' + i).load(function(){
 									thumbsLoaded++;
-									console.log(thumbsLoaded);
 									if(thumbsLoaded == pg.imgTotal) {
 										$('#pgalbums').slideFade(700,function(){
 										$('.pgalbumthumb .pgloading').remove();								
