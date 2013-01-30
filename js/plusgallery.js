@@ -2,7 +2,7 @@
  * +Gallery Javascript Photo gallery v0.8.3
  * http://plusgallery.net/
  *
- * Copyright 2012, Jeremiah Martin
+ * Copyright 2012, Jeremiah Martin | Twitter: @jeremiahjmartin
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -19,24 +19,25 @@ SLIDEFADE
 
 (function ($) {
 	$.fn.slideFade = function (speed, callback) {
+		var slideSpeed;
 		for (var i = 0; i < arguments.length; i++) {
 			if (typeof arguments[i] == "number") {
-				var slideSpeed  = arguments[i];
+				slideSpeed  = arguments[i];
 			}
 			else {
 				var callBack = arguments[i];
 			}
 		}
 		if(!slideSpeed) {
-			var slideSpeed = 500;
+			slideSpeed = 500;
 		}
 		this.animate({
 				opacity: 'toggle',
 				height: 'toggle'
-			}, slideSpeed, 
+			}, slideSpeed,
 			function(){
-				if( typeof callBack != "function" ) { callBack = function(){} }
-				callBack.call(this)
+				if( typeof callBack != "function" ) { callBack = function(){}; }
+				callBack.call(this);
 			}
 		);
   };
@@ -50,14 +51,16 @@ SLIDEFADE
 			imagePath: 'images/plusgallery',
 			type: 'google',
 			albumTitle: false, //show the album title in single album mode
-			albumLimit: 16, //Limit amout of albums to load initially. 
+			albumLimit: 16, //Limit amout of albums to load initially.
 			limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
 			apiKey: '', //used with Flickr
-			exclude: '',
+			exclude: null,
+			include: null,
+
 			
 			/*don't touch*/
-			imgArray: new Array(),
-			titleArray: new Array(),
+			imgArray: [],
+			titleArray: [],
 			t: '', //timer
 			idx: 0,
 			imgCount: 0,
@@ -78,10 +81,8 @@ SLIDEFADE
 				
 				pg.getDataAttr();
 				
-				
-				
 				pg.writeHTML();
-				if(pg.albumId != null || pg.type == 'instagram'){
+				if(pg.albumId !== null || pg.type == 'instagram'){
 					//load single Album
 					pg.loadSingleAlbum();
 				}
@@ -92,7 +93,7 @@ SLIDEFADE
 				//attach loadGallery to the album links
 				_doc.on("click", ".pgalbumlink",function(e){
 					e.preventDefault();
-					$(this).append('<span class="pgloading"></span>');							 
+					$(this).append('<span class="pgloading"></span>');
 					var galleryURL = this.href;
 					var galleryTitle = $(this).children('span').html();
 					pg.loadGallery(galleryURL,galleryTitle);
@@ -126,7 +127,7 @@ SLIDEFADE
 				});
 				_doc.on("click", "#pgzoomview",function(e){
 					e.preventDefault();
-					pg.unloadZoom(); 
+					pg.unloadZoom();
 				});
 				
 				
@@ -138,10 +139,8 @@ SLIDEFADE
 					return false;
 				});
 				
-				clearTimeout(pg.t);	
+				clearTimeout(pg.t);
 			},
-			
-			
 			
 			/*--------------------------
 			
@@ -150,14 +149,14 @@ SLIDEFADE
 			
 			----------------------------*/
 			getDataAttr: function(){
-				lmnt.attr('data-userid')
+				lmnt.attr('data-userid');
 				//Gallery User Id *required
-				var dataAttr = lmnt.attr('data-userid'); 
+				var dataAttr = lmnt.attr('data-userid');
 				if(dataAttr) {
 					pg.userId = dataAttr;
 				}
 				else {
-					alert('You must enter a valid User ID');	
+					alert('You must enter a valid User ID');
 				}
 				
 				//Gallery Type *required
@@ -166,11 +165,11 @@ SLIDEFADE
 					pg.type = dataAttr;
 				}
 				else {
-					alert('You must enter a data type.');	
+					alert('You must enter a data type.');
 				}
 				
 				
-				//Limit on the amount photos per gallery 
+				//Limit on the amount photos per gallery
 				dataAttr = lmnt.attr('data-limit');
 				if(dataAttr) {
 					pg.limit = dataAttr;
@@ -186,6 +185,12 @@ SLIDEFADE
 				dataAttr = lmnt.attr('data-exclude');
 				if(dataAttr) {
 					pg.exclude = dataAttr.split(',');
+				}
+
+				//album ids to include
+				dataAttr = lmnt.attr('data-include');
+				if(dataAttr) {
+					pg.include = dataAttr.split(',');
 				}
 				
 				//Api key - used with Flickr
@@ -246,68 +251,70 @@ SLIDEFADE
 			
 			----------------------------*/
 			writeHTML: function(){
+        var touchClass;
 				if(pg.touch){
-					var touchClass = 'touch';
+					touchClass = 'touch';
 					lmnt.addClass('touch');
 				}
 				else {
-					var touchClass = 'no-touch';
+					touchClass = 'no-touch';
 					lmnt.addClass('no-touch');
 				}
 				
 				
 				lmnt.append(
-					'<ul id="pgalbums" class="clearfix"></ul>' + 
-					'<div id="pgthumbview">' + 
-						'<ul id="pgthumbs" class="clearfix"></ul>' + 
+					'<ul id="pgalbums" class="clearfix"></ul>' +
+					'<div id="pgthumbview">' +
+						'<ul id="pgthumbs" class="clearfix"></ul>' +
 					'</div>'
 				);
 				$('body').prepend(
-					'<div id="pgzoomview" class="pg ' + touchClass + '">' + 
-						'<a href="#" rel="previous" id="pgzoomclose" title="Close">Close</a>' + 
-						'<a href="#" rel="previous" id="pgprevious" class="pgzoomarrow" title="previous">Previous</a>' + 
-						'<a href="#" rel="next" id="pgnext" class="pgzoomarrow" title="Next">Next</a>' + 
-						'<div id="pgzoomscroll">' + 
-							'<ul id="pgzoom"></ul>' + 
-						'</div>' + 
+					'<div id="pgzoomview" class="pg ' + touchClass + '">' +
+						'<a href="#" rel="previous" id="pgzoomclose" title="Close">Close</a>' +
+						'<a href="#" rel="previous" id="pgprevious" class="pgzoomarrow" title="previous">Previous</a>' +
+						'<a href="#" rel="next" id="pgnext" class="pgzoomarrow" title="Next">Next</a>' +
+						'<div id="pgzoomscroll">' +
+							'<ul id="pgzoom"></ul>' +
+						'</div>' +
 					'</div>'
 					);
 				
 				lmnt.addClass('pg');
 				
-				if(pg.credit == true) {
-					lmnt.append('<div id="pgcredit"><a href="http://www.plusgallery.net" target="_blank" title="Powered by +GALLERY"><span>+</span>Gallery</a></div>')
+				if(pg.credit === true) {
+					lmnt.append('<div id="pgcredit"><a href="http://www.plusgallery.net" target="_blank" title="Powered by +GALLERY"><span>+</span>Gallery</a></div>');
 				}
 				
 				//console.log('pg.albumTitle: ' + pg.albumTitle);
 				
-				if(pg.albumTitle == true) {
-					$('#pgthumbview').prepend('<ul id="pgthumbcrumbs" class="clearfix"><li id="pgthumbhome">&laquo;</li></ul>')
+				if(pg.albumTitle === true) {
+					$('#pgthumbview').prepend('<ul id="pgthumbcrumbs" class="clearfix"><li id="pgthumbhome">&laquo;</li></ul>');
 				}
 			},
 			
 			
 			/*--------------------------
 			
-				Load up Album Data JSON 
+				Load up Album Data JSON
 				before Albums
 			
 			----------------------------*/
 			loadAlbumData: function() {
+        var albumURL;
 				switch(pg.type)
 				{
 				case 'google':
-					var albumURL = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '?alt=json&kind=album&hl=en_US&max-results=' + pg.albumLimit + '&callback=?';	
+					albumURL = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '?alt=json&kind=album&hl=en_US&max-results=' + pg.albumLimit + '&callback=?';
 					break;
 				case 'flickr':
-					var albumURL = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';	
+					albumURL = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';
 					break;
 				case 'facebook':
-					var albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&callback=?';	
+					albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&callback=?';
 					break;
 				case 'instagram':
 					//we ain't got no albums in instagram
-					var albumURL = null;	
+					albumURL = null;
 					break;
 		
 				default:
@@ -318,13 +325,19 @@ SLIDEFADE
 				
 				$.getJSON(albumURL,function(json) {
 						lmnt.addClass('loaded');
+            var objPath,
+                albumTotal,
+                galleryImage,
+                galleryTitle,
+                galleryJSON;
+
 						switch(pg.type)
 						{
 						//have to load differently for for google/facebook/flickr
 						case 'google':
 						
-							var objPath = json.feed.entry,
-									albumTotal = objPath.length;
+							objPath = json.feed.entry;
+							albumTotal = objPath.length;
 									
 							if(albumTotal > pg.albumLimit) {
 								albumTotal = pg.albumLimit;
@@ -335,77 +348,69 @@ SLIDEFADE
 						
 							
 							if(albumTotal > 0){
-								$.each(objPath,function(i,obj){	
+								$.each(objPath,function(i,obj){
 									//obj is entry
 									if(i < albumTotal){
-										var galleryTitle = obj.title.$t,
-												galleryImage = obj.media$group.media$thumbnail[0].url,
-												galleryJSON = obj.link[0].href;
-												
-												galleryImage = galleryImage.replace('s160','s210');
+										galleryTitle = obj.title.$t;
+                    galleryJSON = obj.link[0].href;
+										galleryImage = obj.media$group.media$thumbnail[0].url;
+										galleryImage = galleryImage.replace('s160','s210');
 									
 										pg.loadAlbums(galleryTitle,galleryImage,galleryJSON,i);
 									}
 			
 								});
-							} 
+							}
 							else { //else if albumTotal == 0
 								alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
 							}
 							
 						break;
 						case 'flickr':
-							var objPath = json.photosets.photoset,
-									albumTotal = objPath.length;
+							objPath = json.photosets.photoset;
+							albumTotal = objPath.length;
 									
 							if(albumTotal > pg.albumLimit) {
 								albumTotal = pg.albumLimit;
 							}
 									
 							if(albumTotal > 0 ) {
-								$.each(objPath,function(i,obj){	
+								$.each(objPath,function(i,obj){
 									//obj is entry
 									if(i < albumTotal){
-										var galleryTitle = obj.title._content,
-												galleryImage = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.primary + '_' + obj.secret + '_n.jpg',
-												galleryJSON = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + obj.id + '=&format=json&jsoncallback=?';
+										galleryTitle = obj.title._content;
+										galleryImage = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.primary + '_' + obj.secret + '_n.jpg';
+										galleryJSON = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + obj.id + '=&format=json&jsoncallback=?';
 				
 										pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
 									}
 								});
-							} 
+							}
 							else { //else if albumTotal == 0
 								alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
 							}
 							
 						break;
 						case 'facebook':
-							var objPath = json.data,
-									albumTotal = objPath.length;
+							objPath = json.data;
+							albumTotal = objPath.length;
 									
 							if(albumTotal > pg.albumLimit) {
 								albumTotal = pg.albumLimit;
 							}
 									
 							if(albumTotal > 0) {
-							/*if(pg.excludeProfile == true){ 
-								albumTotal--; //remove one if we are excluding the profile
-							}*/
-							
-								$.each(objPath,function(i,obj){	
-									if(i < albumTotal){											
-										var galleryTitle = obj.name;
-										var galleryJSON = 'http://graph.facebook.com/' + obj.id + '/photos';
-										
-										//if(pg.excludeProfile == true && galleryTitle != 'Profile Pictures'){ //exclude Profile Pictures from Facebook TODO
-												var galleryImage = 'http://graph.facebook.com/' + obj.id + '/picture?type=album';	
-												pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
-										//}
+								$.each(objPath,function(i,obj){
+									if(i < albumTotal){
+										galleryTitle = obj.name;
+										galleryJSON = 'http://graph.facebook.com/' + obj.id + '/photos';
+										galleryImage = 'http://graph.facebook.com/' + obj.id + '/picture?type=album';
+										pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
 									}
 									
 								});
-							} 
-							else { //else albumTotal == 0 	
+							}
+							else {
 								alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + albumURL);
 							}
 							
@@ -423,26 +428,41 @@ SLIDEFADE
 			----------------------------*/
 			loadAlbums: function(galleryTitle,galleryImage,galleryJSON) {
 				var displayAlbum = true;
+        var imgHTML;
 				
 				//exclude albums if pg.exclude is set
-				$.each(pg.exclude,function(index, value){ //exclude albums if pg.exclude is set
-					if(galleryJSON.indexOf(value) > 0){
-						displayAlbum = false;
-					}
-				});												 
+        if(pg.exclude !== null) {
+          $.each(pg.exclude,function(index, value){ //exclude albums if pg.exclude is set
+            if(galleryJSON.indexOf(value) > 0){
+              displayAlbum = false;
+            }
+          });
+        }
+
+        console.log(pg);
+
+        //include only specified albums if pg.include is set
+        if(pg.include !== null) {
+          displayAlbum = false;
+          $.each(pg.include,function(index, value){ //exclude albums if pg.exclude is set
+            if(galleryJSON.indexOf(value) > 0){
+              displayAlbum = true;
+            }
+          });
+        }
 																	 
 																	 
-				if(displayAlbum){
-					if(pg.type == 'facebook' || pg.type == 'flickr') {
-					 var imgHTML = 	'<img src="'+ pg.imagePath + '/square.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+				if (displayAlbum){
+          if (pg.type == 'facebook' || pg.type == 'flickr') {
+            imgHTML = '<img src="'+ pg.imagePath + '/square.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';
 					}
 					else {
-						var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+            imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';
 					}
 							
 					$('#pgalbums').append(
-						'<li class="pgalbumthumb">' + 
-							'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' + 
+						'<li class="pgalbumthumb">' +
+							'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' +
 						'</li>'
 					);
 				}
@@ -461,20 +481,20 @@ SLIDEFADE
 			----------------------------*/
 			
 			loadSingleAlbum:function(){
-				
+				var url;
 				switch(pg.type)
 				{
 				case 'google':
-					var url = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '/albumid/' + pg.albumId + '?alt=json&hl=en_US';
+					url = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '/albumid/' + pg.albumId + '?alt=json&hl=en_US';
 					break;
 				case 'flickr':
-					var url = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
+					url = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
 					break;
 				case 'facebook':
-					var url = 'http://graph.facebook.com/' + pg.albumId + '/photos';
+					url = 'http://graph.facebook.com/' + pg.albumId + '/photos';
 					break;
 				case 'instagram':
-					var url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
+					url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
 					break;
 				}
 				
@@ -492,10 +512,14 @@ SLIDEFADE
 			----------------------------*/
 			loadGallery: function(url,title){
 				var obPath,
-						imgTitle = '',
+						imgTitle,
 						imgSrc,
 						imgTh,
-						imgBg = '';
+						imgBg = '',
+            thumbsLoaded = 0,
+            zoomWidth,
+            flickrImgExt;
+
 				pg.imgArray = [];
 				pg.titleArray = [];
 				$('#pgzoom').empty();
@@ -506,24 +530,24 @@ SLIDEFADE
 					success: function(json){
 						$('.crumbtitle').remove();
 						$('#pgthumbs').empty();
-						if(title == undefined){
-							title = '&nbsp;';	
+						if(title === undefined){
+							title = '&nbsp;';
 						}
 						$('#pgthumbcrumbs').append('<li class="crumbtitle">' + title + '</li>');
 					
 						switch(pg.type)
 						{
 						case 'google':
-							objPath = json.feed.entry;	
+							objPath = json.feed.entry;
 							break;
 						case 'flickr':
-							objPath = json.photoset.photo;	
+							objPath = json.photoset.photo;
 							break;
 						case 'facebook':
-							objPath = json.data;		
+							objPath = json.data;
 							break;
 						case 'instagram':
-							objPath = json.data;		
+							objPath = json.data;
 							break;
 						}
 						
@@ -533,24 +557,22 @@ SLIDEFADE
 						//limit the results
 						if(pg.limit < pg.imgTotal){
 							pg.imgTotal = pg.limit;
-						} 
-						
-						if(pg.imgTotal == 0) {
-							alert('Please check your photo permissions,\nor make sure there are photos in this gallery.');
 						}
 						
-						var thumbsLoaded = 0;
-						
+						if(pg.imgTotal === 0) {
+							alert('Please check your photo permissions,\nor make sure there are photos in this gallery.');
+						}
+
 						if(pg.winWidth > 1100) {
-							 var zoomWidth = 1024;
-							 var flickrImgExt = '_b';
+              zoomWidth = 1024;
+							flickrImgExt = '_b';
 							 
 						} else if(pg.winWidth > 620) {
-							 var zoomWidth = 768;
-							 var flickrImgExt = '_b';
+							zoomWidth = 768;
+							flickrImgExt = '_b';
 						} else {
-							var zoomWidth = 540;
-							var flickrImgExt = '_z';
+							zoomWidth = 540;
+							flickrImgExt = '_z';
 						}
 						
 						$.each(objPath,function(i,obj){
@@ -583,20 +605,21 @@ SLIDEFADE
 									imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
 									break;
 								case 'instagram':
-									if(obj.caption != null){
+									if(obj.caption !== null){
 										imgTitle = obj.caption.text;
 									}
 									imgSrc = obj.images.standard_resolution.url;
 									imgTh = obj.images.low_resolution.url;
 									break;
 								}
+
 								
 								if(!imgTitle) {
-									var imgTitle = '';
-								} 
+									imgTitle = '';
+								}
 										
 								pg.imgArray[i] = imgSrc;
-								pg.titleArray[i] = imgTitle;	
+								pg.titleArray[i] = imgTitle;
 								
 								$('#pgthumbs').append('<li class="pgthumb"><a href="' + imgSrc + '"><img src="' + imgTh + '" id="pgthumbimg' + i + '" class="pgthumbimg" alt="' + imgTitle + '" title="' + imgTitle + '"' + imgBg + '></a></li>');
 								
@@ -605,7 +628,7 @@ SLIDEFADE
 									thumbsLoaded++;
 									if(thumbsLoaded == pg.imgTotal) {
 										$('#pgalbums').slideFade(700,function(){
-										$('.pgalbumthumb .pgloading').remove();								
+										$('.pgalbumthumb .pgloading').remove();
 									});
 									$('#pgthumbview').slideFade(700);
 									}
@@ -625,7 +648,7 @@ SLIDEFADE
 			zoomScrollLeft: 0,
 			loadZoom: function(idx){
 				pg.zoomIdx = idx;
-				pg.winWidth = $(window).width();	
+				pg.winWidth = $(window).width();
 				var pgZoomView = $('#pgzoomview'),
 						pgZoomScroll = $('#pgzoomscroll'),
 						pgPrevious = $('#pgprevious'),
@@ -636,12 +659,12 @@ SLIDEFADE
 				pgZoomView.addClass('fixed');
 				
 				//show/hide the prev/next links
-				if(idx == 0) {
-					pgPrevious.hide();	
+				if(idx === 0) {
+					pgPrevious.hide();
 				}
 				
 				if(idx == totalImages - 1) {
-					pgNext.hide();	
+					pgNext.hide();
 				}
 		
 				var pgzoomWidth = pg.imgArray.length * pg.winWidth;
@@ -651,13 +674,12 @@ SLIDEFADE
 				
 					
 				pgZoomView.fadeIn(function(){
-					//this has gotta come in after the fade or iOS blows up.	
+					//this has gotta come in after the fade or iOS blows up.
 					
 					$(window).on('resize',pg.resizeZoom);
 					
-					$.each(pg.imgArray,function(i){	
-						pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imagePath + '/square.gif" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';																	
-						//no preload version: pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imgArray[idx] + '" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';																	
+					$.each(pg.imgArray,function(i){
+						pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imagePath + '/square.gif" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';
 		
 						if(i + 1 == pg.imgArray.length) {
 							//at the end of the loop
@@ -665,25 +687,25 @@ SLIDEFADE
 								
 								pg.zoomKeyPress();
 								$('#pgzoomscroll').scrollLeft(scrollLeftInt);
-								pg.zoomScrollLeft = scrollLeftInt; 
+								pg.zoomScrollLeft = scrollLeftInt;
 								pg.loadZoomImg(idx);
 								pg.zoomScroll();
 								//load siblings
 								if((idx - 1) >= 0){
-								pg.loadZoomImg(idx - 1); 
+								pg.loadZoomImg(idx - 1);
 								}
 								
 								if((idx + 1) < pg.imgArray.length){
-									pg.loadZoomImg(idx + 1); 
+									pg.loadZoomImg(idx + 1);
 								}
-							}													
+							}
 						});
 					});
 			},
 			
 			
 			loadZoomImg:function(idx){
-				if($('#pgzoomimg' + idx).length == 0){
+				if($('#pgzoomimg' + idx).length === 0){
 					$('#pgzoomslide' + idx + ' .pgzoomspacer').after('<img src="' + pg.imgArray[idx] + '" data-src="' + pg.imgArray[idx] + '" title="' + pg.titleArray[idx] + '" alt="' + pg.titleArray[idx] + '" id="pgzoomimg' + idx + '" class="pgzoomimg">');
 					$('#pgzoomimg' + idx).load(function(){
 						$(this).addClass('active');
@@ -700,16 +722,15 @@ SLIDEFADE
 		
 				$('#pgzoomscroll').on('scroll',function(){
 					currentScrollLeft = $(this).scrollLeft();
-					if(canLoadZoom == true) {
+					if(canLoadZoom === true) {
 						canLoadZoom = false;
 						scrollTimeout = setTimeout(function(){
-							if(currentScrollLeft == 0){
+							if(currentScrollLeft === 0){
 								pgPrevious.fadeOut();
 							}
 							else {
 								pgPrevious.fadeIn();
-								
-							}	
+							}
 							
 							if(currentScrollLeft >= (pg.imgTotal - 1) * pg.winWidth){
 							pgNext.fadeOut();
@@ -719,7 +740,7 @@ SLIDEFADE
 							}
 							
 							/*Check if we have scrolled left and if so load up the zoom image*/
-							if(currentScrollLeft % pg.zoomScrollLeft > 20 || (currentScrollLeft > 0 && pg.zoomScrollLeft == 0)){
+							if(currentScrollLeft % pg.zoomScrollLeft > 20 || (currentScrollLeft > 0 && pg.zoomScrollLeft === 0)){
 								pg.zoomScrollLeft = currentScrollLeft;
 								var currentIdx = pg.zoomScrollLeft / pg.winWidth;
 								
@@ -732,15 +753,12 @@ SLIDEFADE
 								}
 								if(!pg.zoomImagesLoaded[currentIdxFloor]){
 									pg.loadZoomImg(currentIdxFloor);
-								}	
+								}
 							}
 							canLoadZoom = true;
 						},200);
 					}
-					
-					
-				});	
-			
+				});
 			},
 			
 			zoomKeyPress: function(){
@@ -796,18 +814,11 @@ SLIDEFADE
 				
 				$('#pgzoomscroll').stop().animate({scrollLeft:newScrollLeft});
 			}
-		}
+		};
 		
 		$.extend(pg, options);
 		pg.init();
-		
-
-		
 	};
-	
-	
-	
-		
 })( jQuery );
 
 
