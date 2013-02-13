@@ -403,7 +403,7 @@ SLIDEFADE
 								$.each(objPath,function(i,obj){
 									if(i < albumTotal){
 										galleryTitle = obj.name;
-										galleryJSON = 'http://graph.facebook.com/' + obj.id + '/photos';
+										galleryJSON = 'http://graph.facebook.com/' + obj.id + '/photos?limit=' + pg.limit;
 										galleryImage = 'http://graph.facebook.com/' + obj.id + '/picture?type=album';
 										pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
 									}
@@ -439,7 +439,6 @@ SLIDEFADE
           });
         }
 
-        console.log(pg);
 
         //include only specified albums if pg.include is set
         if(pg.include !== null) {
@@ -491,7 +490,7 @@ SLIDEFADE
 					url = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
 					break;
 				case 'facebook':
-					url = 'http://graph.facebook.com/' + pg.albumId + '/photos';
+					url = 'http://graph.facebook.com/' + pg.albumId + '/photos?limit=' + pg.limit;
 					break;
 				case 'instagram':
 					url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
@@ -551,7 +550,6 @@ SLIDEFADE
 							break;
 						}
 						
-						//console.log(objPath.length);
 										
 						pg.imgTotal = objPath.length;
 						//limit the results
@@ -566,7 +564,6 @@ SLIDEFADE
 						if(pg.winWidth > 1100) {
               zoomWidth = 1024;
 							flickrImgExt = '_b';
-							 
 						} else if(pg.winWidth > 620) {
 							zoomWidth = 768;
 							flickrImgExt = '_b';
@@ -574,7 +571,8 @@ SLIDEFADE
 							zoomWidth = 540;
 							flickrImgExt = '_z';
 						}
-						
+
+
 						$.each(objPath,function(i,obj){
 							//limit the results
 							
