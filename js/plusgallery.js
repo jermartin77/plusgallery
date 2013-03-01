@@ -46,6 +46,7 @@ SLIDEFADE
 (function ($){
 	$.fn.plusGallery = function(options){
 		var lmnt = this;
+		if(lmnt.length === 0) { return false; }
 		var pg = {
 			/*user defined Defaults*/
 			imagePath: 'images/plusgallery',
