@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Plus Gallery | Single Album Example</title>
+  <link rel="stylesheet" href="css/plusgallery.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+		html,body {
+			height: 100%;
+		}
+		
+		body {
+			margin: 0;
+			padding: 20px 0;
+			text-align:  center;
+		}
+
+	</style>
+  </head>
+<body>
+<div id="plusgallery" data-api-key="c07f724ab7ed6a1b01b799fe753c6d13" data-userid="42571435@N08" data-album-id="72157632874526139" data-limit="100" data-type="flickr"></div>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write("<script src='js/jquery-1.7.2.min.js'>\x3C/script>")</script>
+  <script src="js/plusgallery.js"></script>
+  <script>
+  	$(function(){
+  		$('#plusgallery').plusGallery();
+  	})
+  </script>
+</body>
+</html>

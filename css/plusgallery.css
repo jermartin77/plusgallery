@@ -97,6 +97,7 @@ background-color: #38beea;
 	z-index: 1;
 	background-position: 50% 50%;
 	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 

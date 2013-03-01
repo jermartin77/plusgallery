@@ -79,6 +79,13 @@ SLIDEFADE
 				
 				pg.winWidth = $(window).width();
 				
+
+				//reset some shit in case there is another copy that was loaded.
+				$('#pgzoomview').remove();
+				//Unbind everything first? 
+				_doc.off("click", ".pgalbumlink, #pgthumbhome, .pgthumb, .pgzoomarrow, .pgzoomclose, #pgzoomview, #pgzoomslide, .pgzoomimg");
+
+
 				pg.getDataAttr();
 				
 				pg.writeHTML();
@@ -90,6 +97,10 @@ SLIDEFADE
 					pg.loadAlbumData();
 				}
 				
+
+
+
+
 				//attach loadGallery to the album links
 				_doc.on("click", ".pgalbumlink",function(e){
 					e.preventDefault();
@@ -157,6 +168,7 @@ SLIDEFADE
 				}
 				else {
 					alert('You must enter a valid User ID');
+					return false;
 				}
 				
 				//Gallery Type *required
@@ -166,8 +178,8 @@ SLIDEFADE
 				}
 				else {
 					alert('You must enter a data type.');
+					return false;
 				}
-				
 				
 				//Limit on the amount photos per gallery
 				dataAttr = lmnt.attr('data-limit');
