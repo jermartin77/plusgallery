@@ -2,7 +2,7 @@
  * +Gallery Javascript Photo gallery v0.8.5
  * http://plusgallery.net/
  *
- * Copyright 2012, Jeremiah Martin | Twitter: @jeremiahjmartin
+ * Copyright 2013, Jeremiah Martin | Twitter: @jeremiahjmartin
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -243,6 +243,12 @@ SLIDEFADE
 				else {
 					pg.credit = true;
 				}
+
+				//Image path
+                dataAttr = lmnt.attr('data-image-path');
+                if(dataAttr) {
+                    pg.imagePath = dataAttr;
+                }
 				
 				
 				//not used
