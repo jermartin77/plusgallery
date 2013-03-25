@@ -249,20 +249,7 @@ SLIDEFADE
                 if(dataAttr) {
                     pg.imagePath = dataAttr;
                 }
-				
-				
-				//not used
-				
-				/*
-				dataAttr = pgDiv.attr('data-excludeprofile');
-				if(dataAttr == 'false') {
-					pg.excludeProfile = false;
-				} else {
-					pg.excludeProfile = true;
-				}
-				 */
 			},
-			
 			
 			/*--------------------------
 			
