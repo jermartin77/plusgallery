@@ -213,7 +213,7 @@ SLIDEFADE
 				}
 				
 				
-				//Access Token - used with instagram
+				//Access Token - used with instagram / Facebook
 				dataAttr = lmnt.attr('data-access-token');
 				if(dataAttr) {
 					pg.accessToken = dataAttr;
@@ -316,7 +316,8 @@ SLIDEFADE
 					albumURL = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';
 					break;
 				case 'facebook':
-					albumURL = 'http://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&callback=?';
+					albumURL = 'https://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&access_token=' + pg.accessToken + '&callback=?';
+
 					break;
 				case 'instagram':
 					//we ain't got no albums in instagram
@@ -409,7 +410,7 @@ SLIDEFADE
 								$.each(objPath,function(i,obj){
 									if(i < albumTotal){
 										galleryTitle = obj.name;
-										galleryJSON = 'http://graph.facebook.com/' + obj.id + '/photos?limit=' + pg.limit;
+										galleryJSON = 'https://graph.facebook.com/' + obj.id + '/photos?limit=' + pg.limit + '&access_token=' + pg.accessToken;
 										galleryImage = 'http://graph.facebook.com/' + obj.id + '/picture?type=album';
 										pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
 									}
@@ -496,7 +497,7 @@ SLIDEFADE
 					url = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
 					break;
 				case 'facebook':
-					url = 'http://graph.facebook.com/' + pg.albumId + '/photos?limit=' + pg.limit;
+					url = 'https://graph.facebook.com/' + pg.albumId + '/photos?limit=' + pg.limit + '&access_token=' + pg.accessToken;
 					break;
 				case 'instagram':
 					url = 'https://api.instagram.com/v1/users/' + pg.userId + '/media/recent/?access_token=' + pg.accessToken + '&count=' + pg.limit;
