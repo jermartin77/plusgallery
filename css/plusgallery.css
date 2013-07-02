@@ -251,6 +251,8 @@ background-color: #38beea;
 	width: 100%;
 	height: 100%;
 	z-index: -1;
+	background: transparent;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CC000000,endColorstr=#CC000000)"; /* IE8 */
 	background: rgba(0,0,0,.8);
 	text-align: center;
 	z-index: 1000;
@@ -304,6 +306,7 @@ background-color: #38beea;
 }
 
 .pgzoomspacer {
+	display: inline-block;
 	width: 1px;
 	height: 100%;
 	vertical-align: middle;

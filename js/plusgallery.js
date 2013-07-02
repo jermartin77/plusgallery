@@ -684,7 +684,7 @@ SLIDEFADE
 					$(window).on('resize',pg.resizeZoom);
 					
 					$.each(pg.imgArray,function(i){
-						pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><img src="' + pg.imagePath + '/square.gif" class="pgzoomspacer"><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';
+						pgZoomHTML = pgZoomHTML  + '<li class="pgzoomslide loading" id="pgzoomslide' + i + '" style="width: ' + pg.winWidth + 'px;"><div class="pgzoomspacer"></div><span class="pgzoomcaption">' + pg.titleArray[i] + '</span></li>';
 		
 						if(i + 1 == pg.imgArray.length) {
 							//at the end of the loop
