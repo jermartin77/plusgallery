@@ -9,7 +9,6 @@
 	position: relative;
 	z-index: 1;
 	background: url(../images/plusgallery/loading-albums.gif) no-repeat 50% 50%;
-	min-height: 240px;
 	text-align: left;
 }
 
