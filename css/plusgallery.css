@@ -382,7 +382,7 @@ background-color: #38beea;
 .pgzoomarrow:hover {
 	-webkit-box-shadow: inset 1px 1px 6px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: inset 1px 1px 6px rgba(0, 0, 0, 0.3);
-  box-shadow: inset 1px 1px 6px rgba(0, 0, 0, 0.3);\
+  box-shadow: inset 1px 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 #pgprevious {
