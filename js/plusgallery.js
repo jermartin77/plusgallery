@@ -110,7 +110,8 @@ SLIDEFADE
           $(this).append('<span class="pgloading"></span>');
           var galleryTitle = $(this).children('span').html();
           if(pg.type == 'local') {
-            pg.parseData(pg.imageData.albums[this.host],galleryTitle);
+						var galleryID = $(this).attr('data-album-index').replace('http://', '').replace('//', '').replace('https://', '');
+            pg.parseData(pg.imageData.albums[galleryID],galleryTitle);
           } else {
             var galleryURL = this.href;
             pg.loadGallery(galleryURL,galleryTitle);
@@ -503,12 +504,20 @@ SLIDEFADE
           else {
             imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';
           }
-              
-          $('#pgalbums').append(
-            '<li class="pgalbumthumb">' +
-              '<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' +
-            '</li>'
-          );
+          
+					if(pg.type == 'local') {
+						$('#pgalbums').append(
+							'<li class="pgalbumthumb">' +
+								'<a href="#" data-album-index="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' +
+							'</li>'
+						);
+					} else {
+						$('#pgalbums').append(
+							'<li class="pgalbumthumb">' +
+								'<a href="' + galleryJSON + '" class="pgalbumlink">' + imgHTML + '<span class="pgalbumtitle">' + galleryTitle + '</span><span class="pgplus">+</span></a>' +
+							'</li>'
+						);
+					}
         }
         
         
