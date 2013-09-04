@@ -153,6 +153,9 @@ SLIDEFADE
         });
         
         _doc.on("click", ".pgzoomimg",function(){
+					if($(this).attr('id').replace('pgzoomimg', '') < pg.imgTotal - 1) {
+						pg.prevNext('next');
+					}
           return false;
         });
         
