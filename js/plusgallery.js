@@ -55,6 +55,7 @@ SLIDEFADE
       albumLimit: 16, //Limit amout of albums to load initially.
       limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
       apiKey: '', //used with Flickr
+      imgurClientId: '', //used with Imgur
       exclude: null,
       include: null,
       imageData: null,
@@ -184,7 +185,7 @@ SLIDEFADE
         if(dataAttr) {
           pg.userId = dataAttr;
         }
-        else if(pg.type != 'local') {
+        else if(pg.type != 'local' && pg.type != 'imgur') {
           alert('You must enter a valid User ID');
           return false;
         }
@@ -539,6 +540,12 @@ SLIDEFADE
         var url;
         switch(pg.type)
         {
+        case 'imgur':
+          url = 'https://api.imgur.com/3/album/' + pg.albumId + '/images';
+          pg.loadGallery(url,null,function(xhr) {
+            xhr.setRequestHeader('Authorization', 'Client-ID ' + pg.imgurClientId);
+          });
+          break;
         case 'google':
           url = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '/albumid/' + pg.albumId + '?alt=json&hl=en_US';
           pg.loadGallery(url);
@@ -571,20 +578,21 @@ SLIDEFADE
         a specific gallery
       
       ----------------------------*/
-      loadGallery: function(url,title){
+      loadGallery: function(url,title,before){
         pg.imgArray = [];
         pg.titleArray = [];
         $('#pgzoom').empty();
         $.ajax({
           url: url,
           cache: false,
-          dataType: "jsonp",
+          dataType: "json",
           success: function(json){
             pg.parseData(json,title);
           }, //end success
           error: function(jqXHR, textStatus, errorThrown){
             console.log('Error: \njqXHR:' + jqXHR + '\ntextStatus: ' + textStatus + '\nerrorThrown: '  + errorThrown);
-          }
+          },
+          beforeSend: before
         });
       }, //End loadGallery
       
@@ -614,6 +622,9 @@ SLIDEFADE
       
         switch(pg.type)
         {
+        case 'imgur':
+          objPath = json.data;
+          break;
         case 'google':
           objPath = json.feed.entry;
           break;
@@ -657,6 +668,13 @@ SLIDEFADE
           if(i < pg.limit) {
             switch(pg.type)
             {
+            case 'imgur':
+              imgTitle = obj.title;
+              imgSrc = obj.link;
+
+              var idx = imgSrc.lastIndexOf('.');
+              imgTh = (imgSrc.slice(0,idx) + 's' + imgSrc.slice(idx));
+              break;
             case 'google':
               imgTitle = obj.title.$t;
               imgSrc = obj.media$group.media$content[0].url;
