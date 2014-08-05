@@ -87,7 +87,7 @@ SLIDEFADE
         _doc.off("click", ".pgalbumlink, #pgthumbhome, .pgthumb, .pgzoomarrow, .pgzoomclose, #pgzoomview, #pgzoomslide, .pgzoomimg");
 
         pg.getDataAttr();
-        console.log( pg.albumId );
+        
         pg.writeHTML();
         if(pg.albumId !== null
           || pg.type == 'instagram'
@@ -350,7 +350,7 @@ SLIDEFADE
           }
         break;
         case 'flickr':
-          console.log( json );
+          
           objPath = json.photosets.photoset;
           albumTotal = objPath.length;
               
