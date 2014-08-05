@@ -171,12 +171,12 @@ SLIDEFADE
       getDataAttr: function(){
         //Gallery Type *required
         var dataAttr = lmnt.attr('data-type');
-        if(dataAttr) {
+        
+        if(pg.type == null && dataAttr) {
           pg.type = dataAttr;
         }
-        else {
+        else if ( pg.type == null ) {
           alert('You must enter a data type.');
-          return false;
         }
         
         //Gallery User Id *required if not local
@@ -186,7 +186,6 @@ SLIDEFADE
         }
         else if(pg.type != 'local') {
           alert('You must enter a valid User ID');
-          return false;
         }
         
         //Limit on the amount photos per gallery
@@ -237,17 +236,10 @@ SLIDEFADE
             pg.albumTitle = false;
           }
         }
-        else {
-          pg.albumTitle = true;
-          pg.albumId = null;
-        }
         
         dataAttr = lmnt.attr('data-credit');
         if(dataAttr == 'false') {
           pg.credit = false;
-        }
-        else {
-          pg.credit = true;
         }
 
         //Image path
@@ -262,6 +254,7 @@ SLIDEFADE
           pg.imageData = JSON.parse(dataAttr);
         }
       },
+
       
       /*--------------------------
       
