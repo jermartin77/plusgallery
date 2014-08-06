@@ -265,7 +265,7 @@ SLIDEFADE
     var pg = {
       /*user defined Defaults*/
       imagePath: 'images/plusgallery',
-      type: 'google',
+      type: null,
       albumTitle: false, //show the album title in single album mode
       albumLimit: 16, //Limit amout of albums to load initially.
       limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
@@ -285,7 +285,7 @@ SLIDEFADE
       winWidth: 1024, //resets
       touch: false,
       titleText: '',
-      
+
       init: function(){
         var _doc = $(document);
         //check for touch device
@@ -387,12 +387,12 @@ SLIDEFADE
       getDataAttr: function(){
         //Gallery Type *required
         var dataAttr = lmnt.attr('data-type');
-        if(dataAttr) {
+        
+        if(pg.type == null && dataAttr) {
           pg.type = dataAttr;
         }
-        else {
-          alert('You must enter a data type.');
-          return false;
+        else if ( pg.type == null ) {
+          throw('You must enter a data type.');
         }
         
         //Gallery User Id *required if not local
@@ -401,8 +401,7 @@ SLIDEFADE
           pg.userId = dataAttr;
         }
         else if(pg.type != 'local') {
-          alert('You must enter a valid User ID');
-          return false;
+          throw('You must enter a valid User ID');
         }
         
         //Limit on the amount photos per gallery
@@ -649,17 +648,10 @@ SLIDEFADE
             pg.albumTitle = false;
           }
         }
-        else {
-          pg.albumTitle = true;
-          pg.albumId = null;
-        }
         
         dataAttr = lmnt.attr('data-credit');
         if(dataAttr == 'false') {
           pg.credit = false;
-        }
-        else {
-          pg.credit = true;
         }
 
         //Image path
@@ -766,10 +758,11 @@ SLIDEFADE
             });
           }
           else { //else if albumTotal == 0
-            alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
+            throw('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
           }
         break;
         case 'flickr':
+          
           objPath = json.photosets.photoset;
           albumTotal = objPath.length;
               
@@ -782,15 +775,15 @@ SLIDEFADE
               //obj is entry
               if(i < albumTotal){
                 galleryTitle = obj.title._content;
-                galleryImage = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.primary + '_' + obj.secret + '_n.jpg';
-                galleryJSON = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + obj.id + '=&format=json&jsoncallback=?';
+                galleryImage = 'https://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.primary + '_' + obj.secret + '_n.jpg';
+                galleryJSON = 'https://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + obj.id + '=&format=json&jsoncallback=?';
     
                 pg.loadAlbums(galleryTitle,galleryImage,galleryJSON);
               }
             });
           }
           else { //else if albumTotal == 0
-            alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
+            throw('There are either no results for albums with this user ID or there was an error loading the data. \n' + galleryJSON);
           }
         break;
         case 'facebook':
@@ -813,7 +806,7 @@ SLIDEFADE
             });
           }
           else {
-            alert('There are either no results for albums with this user ID or there was an error loading the data. \n' + albumURL);
+            throw('There are either no results for albums with this user ID or there was an error loading the data. \n' + albumURL);
           }
           break;
         case 'local':
@@ -837,7 +830,7 @@ SLIDEFADE
             });
           }
           else { //else if albumTotal == 0
-            alert('There are no albums available in the specified JSON.');
+            throw('There are no albums available in the specified JSON.');
           }
           break;
         }
@@ -858,7 +851,7 @@ SLIDEFADE
           albumURL = 'https://picasaweb.google.com/data/feed/base/user/' + pg.userId + '?alt=json&kind=album&hl=en_US&max-results=' + pg.albumLimit + '&callback=?';
           break;
         case 'flickr':
-          albumURL = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';
+          albumURL = 'https://api.flickr.com/services/rest/?&method=flickr.photosets.getList&api_key=' + pg.apiKey + '&user_id=' + pg.userId + '&format=json&jsoncallback=?';
           break;
         case 'facebook':
           albumURL = 'https://graph.facebook.com/' + pg.userId + '/albums?limit=' + pg.albumLimit + '&access_token=' + pg.accessToken + '&callback=?';
@@ -873,7 +866,7 @@ SLIDEFADE
           break;
     
         default:
-          alert('Please define a gallery type.');
+          throw('Please define a gallery type.');
         }
         
         $.getJSON(albumURL,function(json) {
@@ -1003,7 +996,7 @@ SLIDEFADE
           pg.loadGallery(url);
           break;
         case 'flickr':
-          url = 'http://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
+          url = 'https://api.flickr.com/services/rest/?&method=flickr.photosets.getPhotos&api_key=' + pg.apiKey + '&photoset_id=' + pg.albumId + '=&format=json&jsoncallback=?';
           pg.loadGallery(url);
           break;
         case 'facebook':
@@ -1432,7 +1425,7 @@ pg.init();
         }
         
         if(pg.imgTotal === 0) {
-          alert('Please check your photo permissions,\nor make sure there are photos in this gallery.');
+          throw('Please check your photo permissions,\nor make sure there are photos in this gallery.');
         }
 >>>>>>> 6b382e1c9a3b3cf0514fc99d0d1116853930d626
 
