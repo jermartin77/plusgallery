@@ -668,10 +668,12 @@ SLIDEFADE
               imgTh = 'http://farm' + obj.farm + '.staticflickr.com/' + obj.server + '/' + obj.id + '_' + obj.secret + '_q.jpg';
               break;
             case 'facebook':
+              var index = obj.images.length > 1 ? 1 : 0;
               imgTitle = obj.name;
-              imgSrc = obj.images[1].source;
+              imgSrc = obj.images[index].source;
               imgTh = pg.imagePath + '/square.png';
-              imgBg = ' style="background: url(' + obj.images[3].source + ') no-repeat 50% 50%; background-size: cover;"';
+              imgBgSrc = (typeof obj.images[3] !== 'undefined') ? obj.images[3].source : obj.images[index].source;
+              imgBg = ' style="background: url(' + imgBgSrc + ') no-repeat 50% 50%; background-size: cover;"';
               break;
             case 'instagram':
               if(obj.caption !== null){
