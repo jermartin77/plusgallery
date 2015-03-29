@@ -89,7 +89,7 @@ SLIDEFADE
         pg.getDataAttr();
         
         pg.writeHTML();
-        if(pg.albumId !== null
+        if(pg.albumId
           || pg.type == 'instagram'
           || (pg.type == 'local' && !pg.imageData.hasOwnProperty('albums'))){
           //load single Album
