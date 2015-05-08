@@ -49,7 +49,7 @@ SLIDEFADE
     if(lmnt.length === 0) { return false; }
     var pg = {
       /*user defined Defaults*/
-      imagePath: 'images/plusgallery',
+      imagePath: '/images/plusgallery',
       type: null,
       albumTitle: false, //show the album title in single album mode
       albumLimit: 16, //Limit amout of albums to load initially.
