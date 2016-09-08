@@ -1,3 +1,9 @@
+No Longer Supported!
+--------------------
+
+Do to changes in apis and restrictions on requests that differ from provider to provider I don't have the time to maintain this anymore. Keeping this code up as it is still in use and functional for some parties. 
+
+
 +Gallery
 ========
 
