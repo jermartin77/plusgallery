@@ -11,6 +11,14 @@
 
 
 jQuery.ajaxSetup({ cache: false });
+
+/**
+ *  jQuery reverse hack
+ *  http://stackoverflow.com/questions/1394020/jquery-each-backwards
+ */
+ 
+jQuery.fn.reverse = [].reverse;
+
 /*
 SLIDEFADE
 ------------------------------------------------------------------------------------------------------*/
@@ -58,6 +66,12 @@ SLIDEFADE
       exclude: null,
       include: null,
       imageData: null,
+      /**
+       *  Option to reverse album order
+       *  Added by Wouter Spaak
+       *  01-30-2014
+       */
+      reverse: false,
 
       
       /*don't touch*/
@@ -248,6 +262,20 @@ SLIDEFADE
             pg.imagePath = dataAttr;
         }
         
+        /**
+         *  Reverse order of albums
+         *  Parse from HTML string
+         *  Added by Wouter Spaak
+         *  01-30-2014
+         */
+        dataAttr = lmnt.attr('data-reverse');
+        if(dataAttr == 'true') {
+            pg.reverse = true;
+        }
+        else {
+            pg.reverse = false;
+        }
+        
         //JSON string containing image data *required only for local
         dataAttr = lmnt.attr('data-image-data');
         if(dataAttr) {
@@ -330,7 +358,14 @@ SLIDEFADE
           
           //remove excluded galleries if there are any.
           //albumTotal = albumTotal - pg.exclude.length;
-        
+          
+          /**
+           * Added method to reverse album order.
+           */
+          if(pg.reverse) {
+            objPath.reverse();
+          }
+          
           if(albumTotal > 0){
             $.each(objPath,function(i,obj){
               //obj is entry
@@ -357,6 +392,13 @@ SLIDEFADE
           if(albumTotal > pg.albumLimit) {
             albumTotal = pg.albumLimit;
           }
+          
+          /**
+           * Added method to reverse album order.
+           */
+          if(pg.reverse) {
+            objPath.reverse();
+          }
               
           if(albumTotal > 0 ) {
             $.each(objPath,function(i,obj){
@@ -381,6 +423,13 @@ SLIDEFADE
           if(albumTotal > pg.albumLimit) {
             albumTotal = pg.albumLimit;
           }
+          
+          /**
+           * Added method to reverse album order.
+           */
+          if(pg.reverse) {
+            objPath.reverse();
+          }
               
           if(albumTotal > 0) {
             $.each(objPath,function(i,obj){
@@ -403,6 +452,13 @@ SLIDEFADE
           
           if(albumTotal > pg.albumLimit) {
             albumTotal = pg.albumLimit;
+          }
+          
+          /**
+           * Added method to reverse album order.
+           */
+          if(pg.reverse) {
+            objPath.reverse();
           }
               
           if(albumTotal > 0 ) {
