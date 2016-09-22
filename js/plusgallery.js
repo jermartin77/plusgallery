@@ -89,7 +89,7 @@ SLIDEFADE
         pg.getDataAttr();
         
         pg.writeHTML();
-        if(pg.albumId
+        if(pg.albumId !== undefined
           || pg.type == 'instagram'
           || (pg.type == 'local' && !pg.imageData.hasOwnProperty('albums'))){
           //load single Album
@@ -699,15 +699,15 @@ SLIDEFADE
             $('#pgthumbs').append('<li class="pgthumb"><a href="' + imgSrc + '"><img src="' + imgTh + '" id="pgthumbimg' + i + '" class="pgthumbimg" alt="' + imgTitle + '" title="' + imgTitle + '"' + imgBg + '></a></li>');
             
             //check to make sure all the images are loaded and if so show the thumbs
-            $('#pgthumbimg' + i).load(function(){
+            //$('#pgthumbimg' + i).load(function(){
               thumbsLoaded++;
               if(thumbsLoaded == pg.imgTotal) {
-                $('#pgalbums').slideFade(700,function(){
-                $('.pgalbumthumb .pgloading').remove();
-              });
-              $('#pgthumbview').slideFade(700);
+                   $('#pgalbums').slideFade(700,function(){
+                   $('.pgalbumthumb .pgloading').remove();
+                 });
+                 $('#pgthumbview').slideFade(700);
               }
-          });
+            //});
           } //end if(i < pg.limit)
         }); //end each
       },
